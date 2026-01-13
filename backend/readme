@@ -1,0 +1,12 @@
+add express mongoose 
+create index.js
+add route skeleton for uerlogin signup purchased a course, see course
+add routes for admin login signup createa course delete a course add a ourse content
+add middlewares for users and admin auth 
+ addd a data base use dotenv to store the database connection string 
+ define the schemea for user admin and course, purchase
+  complete the routes for user login singup purchase a course see course 
+
+
+
+

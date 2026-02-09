@@ -1,12 +1,12 @@
 import express from "express";
 const router = express.Router();
 
-import { adminSignup, adminSingin, createCourse, deleteCourse, logout, upCourse } from "../controllers/adminController.js";
+import { adminSignup, adminSignin, createCourse, deleteCourse, logout, upCourse } from "../controllers/adminController.js";
 import { adminMiddleware } from "../middlewares/admin.js";
 
 router.post('/signup', adminSignup);
 
-router.post('/signin', adminSingin);
+router.post('/signin', adminSignin);
 
 router.post('/logout', logout);
 

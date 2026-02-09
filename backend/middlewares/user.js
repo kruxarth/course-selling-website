@@ -1,12 +1,9 @@
 import jwt from "jsonwebtoken";
 
-
-const JWT_USER_PASSWORD= process.env.JWT_USER_PASSWORD
-
 function userMiddleware(req, res, next){
     try {
         const token = req.headers.token;
-        const decoded = jwt.verify(token, JWT_USER_PASSWORD);
+        const decoded = jwt.verify(token, process.env.JWT_USER_PASSWORD);
 
         if(decoded){
             req.userId = decoded.id;
@@ -15,6 +12,7 @@ function userMiddleware(req, res, next){
             return res.status(403).json({message: "You are not signed in"});
         }
     } catch(error){
+        console.log("JWT Error:", error.message);
         return res.status(403).json({message: "You are not signed in"});
     }
 }

@@ -1,12 +1,9 @@
 import jwt from "jsonwebtoken";
 
-const JWT_ADMIN_PASSWORD = process.env.JWT_ADMIN_PASSWORD
-
-
 function adminMiddleware(req, res, next){
     try {
         const token = req.headers.token;
-        const decoded = jwt.verify(token, JWT_ADMIN_PASSWORD);
+        const decoded = jwt.verify(token, process.env.JWT_ADMIN_PASSWORD);
 
         if(decoded){
             req.adminId = decoded.id;

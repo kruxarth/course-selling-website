@@ -8,13 +8,66 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { signupUser, signupAdmin } from "@/api/auth.api"
+import { useNavigate } from "react-router-dom"
 
 export function SignupForm({
   className,
   ...props
 }) {
+  const navigate = useNavigate()
+
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [email, setEmail] = useState("")
+  const [error, setError] = useState("")
+  const [role, setRole] = useState("user")
+
+  const signupMutation = useMutation({
+    mutationFn: ({role, ...payload})=> {
+      console.log("Role:", role, "Payload:", payload)
+      return role === "admin" ? signupAdmin(payload) : signupUser(payload)
+    },
+    onSuccess: (data) => {
+      console.log("Signup successful:", data)
+      navigate("/login")
+    },
+    onError: (error) => {
+      console.log("Signup error:", error)
+      setError(error.response?.data?.message || error.response?.data?.error || "Signup failed")
+    }
+  })
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setError("")
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match")
+      return
+    }
+
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long")
+      return
+    }
+
+    signupMutation.mutate({
+      firstName,
+      lastName,
+      email,
+      password,
+      role
+    })
+  }
+
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Create your account</h1>
@@ -22,32 +75,106 @@ export function SignupForm({
             Fill in the form below to create your account
           </p>
         </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
+
         <Field>
-          <FieldLabel htmlFor="name">Full Name</FieldLabel>
-          <Input id="name" type="text" placeholder="John Doe" required />
-        </Field>
+					<FieldLabel>Select Role</FieldLabel>
+
+					<div className="flex flex-col gap-3 border border-white rounded-sm  justify-between">
+						<label className="flex items-center gap-2 cursor-pointer">
+							<input
+								type="radio"
+								name="role"
+								value="user"
+								checked={role === "user"}
+								onChange={() => setRole("user")}
+							/>
+							<span>User</span>
+						</label>
+
+						<label className="flex items-center gap-2 cursor-pointer">
+							<input
+								type="radio"
+								name="role"
+								value="admin"
+								checked={role === "admin"}
+								onChange={() => setRole("admin")}
+							/>
+							<span>Admin</span>
+						</label>
+					</div>
+				</Field>
+
+
+
+        <div className="grid grid-cols-2 gap-4">
+          <Field>
+            <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+            <Input 
+              id="firstName" 
+              type="text" 
+              placeholder="John" 
+              required 
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+            <Input 
+              id="lastName" 
+              type="text" 
+              placeholder="Doe" 
+              required 
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </Field>
+        </div>
         <Field>
           <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input id="email" type="email" placeholder="m@example.com" required />
-          {/* <FieldDescription>
-            We&apos;ll use this to contact you. We will not share your email
-            with anyone else.
-          </FieldDescription> */}
+          <Input 
+            id="email" 
+            type="email" 
+            placeholder="m@example.com" 
+            required 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </Field>
         <Field>
           <FieldLabel htmlFor="password">Password</FieldLabel>
-          <Input id="password" type="password" required />
+          <Input 
+            id="password" 
+            type="password" 
+            required 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <FieldDescription>
             Must be at least 8 characters long.
           </FieldDescription>
         </Field>
         <Field>
           <FieldLabel htmlFor="confirm-password">Confirm Password</FieldLabel>
-          <Input id="confirm-password" type="password" required />
+          <Input 
+            id="confirm-password" 
+            type="password" 
+            required 
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
           <FieldDescription>Please confirm your password.</FieldDescription>
         </Field>
         <Field>
-          <Button type="submit">Create Account</Button>
+          <Button type="submit" disabled={signupMutation.isPending}>
+            {signupMutation.isPending ? "Creating Account..." : "Create Account"}
+          </Button>
         {/* </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field> */}

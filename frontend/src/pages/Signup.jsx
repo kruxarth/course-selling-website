@@ -15,7 +15,7 @@ export function Signup() {
                         Kourera
                     </a>
                 </div>
-                <div className="flex flex-1 items-center justify-center">
+                <div className="flex flex-1 items-center justify-center bg-white my-10 mx-40 rounded-2xl">
                     <div className="w-full max-w-xs">
                         <SignupForm />
                     </div>

@@ -2,8 +2,6 @@ import { purchaseModel, userModel, courseModel } from "../config/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-const JWT_USER_PASSWORD = process.env.JWT_USER_PASSWORD;
-
 export const UserSignup = async (req, res) => {
 	const { email, firstName, lastName, password } = req.body;
 
@@ -67,7 +65,7 @@ export const UserSignin = async (req, res) => {
 		{
 			id: user._id,
 		},
-		JWT_USER_PASSWORD
+		process.env.JWT_USER_PASSWORD
 	);
 
 	return res.json({
@@ -77,6 +75,18 @@ export const UserSignin = async (req, res) => {
 
 export const logout = (req, res)=>{
 	return res.status(200).json({message: "You logged out successfully"});
+}
+
+export const getMe = async (req, res) => {
+	try {
+		const user = await userModel.findById(req.userId).select("-password");
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		return res.status(200).json({ user });
+	} catch (error) {
+		return res.status(500).json({ error: "Error fetching user profile" });
+	}
 }
 
 // export const purchase = async (req, res)={
@@ -93,13 +103,13 @@ export const logout = (req, res)=>{
 export const purchase = async (req, res)=>{
 	const userId = req.userId;
 	try {
-		const purchases = await purchaseModel.find({userId});
+		const purchases = await purchaseModel.find({userId}).populate("courseId");
 
-		const purchasedCourseId = purchases.map(p=>p.courseId);
+		const courses = purchases.map(p => p.courseId);
 
 		return res.status(200).json({
 			success: true,
-			purchasedCourseId
+			courses
 		})
 	} catch (error) {
 		return res.status(500).json({

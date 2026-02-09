@@ -4,8 +4,6 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 
-const JWT_ADMIN_PASSWORD = process.env.JWT_ADMIN_PASSWORD;
-
 
 export const adminSignup = async (req, res) => {
 	const { email, password, firstName, lastName } = req.body;
@@ -39,29 +37,29 @@ export const adminSignup = async (req, res) => {
 	}
 };
 
-export const adminSingin = async(req, res)=> {
+export const adminSignin = async (req, res) => {
 
-    const {email, password} = req.body
+	const { email, password } = req.body
 
-    const admin = await adminModel.findOne({
-        email: email
-    })
+	const admin = await adminModel.findOne({
+		email: email
+	})
 
-    if(!admin){
-        return res.status(402).json({message: "invalid user credentials"})
-    }
+	if (!admin) {
+		return res.status(402).json({ message: "invalid user credentials" })
+	}
 
-    const matchedPassword = await bcrypt.compare(password, admin.password);
+	const matchedPassword = await bcrypt.compare(password, admin.password);
 
-    if(!matchedPassword){
-        return res.status(403).json({message: "Invalid password credentials"})
-    }
+	if (!matchedPassword) {
+		return res.status(403).json({ message: "Invalid password credentials" })
+	}
 
 	const token = jwt.sign(
 		{
 			id: admin._id,
 		},
-		JWT_ADMIN_PASSWORD
+		process.env.JWT_ADMIN_PASSWORD
 	);
 
 	return res.json({
@@ -71,8 +69,8 @@ export const adminSingin = async(req, res)=> {
 
 
 
-export const logout = (req, res)=>{
-	return res.status(200).json({message: "You logged out successfully"});
+export const logout = (req, res) => {
+	return res.status(200).json({ message: "You logged out successfully" });
 }
 
 
@@ -102,49 +100,49 @@ export const deleteCourse = async (req, res) => {
 
 
 
-export const upCourse = async (req, res)=> {
+export const upCourse = async (req, res) => {
 
-    const {courseId} = req.params;
-    const {title, description, price} = req.body;
+	const { courseId } = req.params;
+	const { title, description, price } = req.body;
 
-    try {
-        if (!mongoose.Types.ObjectId.isValid(courseId)) {
-					return res.status(400).json({ error: "Invalid course id" });
-				}
+	try {
+		if (!mongoose.Types.ObjectId.isValid(courseId)) {
+			return res.status(400).json({ error: "Invalid course id" });
+		}
 
-        const course = await courseModel.findById(courseId);
+		const course = await courseModel.findById(courseId);
 
-        if(!course){
-            return res.status(404).json("Course Id not found");
-        }
+		if (!course) {
+			return res.status(404).json("Course Id not found");
+		}
 
-        course.title = title ?? course.title;
-        course.description = description ?? course.description;
-        course.price = price ?? course.price;
+		course.title = title ?? course.title;
+		course.description = description ?? course.description;
+		course.price = price ?? course.price;
 
-        const imageFile = req.files?.image
-        if(imageFile){
-            if(course.image?.public_id){
-                await cloudinary.uploader.destroy(course.image.public_id);
-            }
+		const imageFile = req.files?.image
+		if (imageFile) {
+			if (course.image?.public_id) {
+				await cloudinary.uploader.destroy(course.image.public_id);
+			}
 
-            const result = await cloudinary.uploader.upload(imageFile.tempFilePath);
+			const result = await cloudinary.uploader.upload(imageFile.tempFilePath);
 
-            course.image = {
-            public_id: result.public_id,
-            url: result.secure_url
-        }
+			course.image = {
+				public_id: result.public_id,
+				url: result.secure_url
+			}
 
-        }
+		}
 
-        await course.save();
-        return res.status(200).json({message: "course updated successfully"})
+		await course.save();
+		return res.status(200).json({ message: "course updated successfully" })
 
 
-    } catch (error) {
-        console.log("error updating course", error)
-        return res.status(500).json({error: " error updating course"})
-    }
+	} catch (error) {
+		console.log("error updating course", error)
+		return res.status(500).json({ error: " error updating course" })
+	}
 }
 
 

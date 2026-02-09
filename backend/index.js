@@ -16,7 +16,8 @@ const app = express();
 // Allow requests from your frontend
 app.use(cors({
   origin: process.env.FRONTEND_URL ||"http://localhost:5173", // Your Vite dev server
-  credentials: true // If you need to send cookies/auth headers
+  credentials: true, // If you need to send cookies/auth headers
+  allowedHeaders: ["Content-Type", "token"] // Allow custom 'token' header
 }));
 
 app.use(express.json());

@@ -1,181 +1,139 @@
-import * as React from "react"
+import { Home, Settings, Package2, User2, ChevronUp, GalleryVerticalEnd } from "lucide-react"
+import { useState, useEffect } from "react"
 
-import { SearchForm } from "@/components/search-form"
-import { VersionSwitcher } from "@/components/version-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
+  SidebarHeader,
+  SidebarFooter
 } from "@/components/ui/sidebar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
+import { getMe } from "@/api/auth.api";
 
-// This is sample data.
-const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Building Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
-        },
-      ],
-    },
-  ],
-}
+// Menu items.
+const items = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Home,
+  },
+  {
+    title: "Courses",
+    url: "/courses",
+    icon: Package2,
+  },
+  
+  {
+    title: "Settings",
+    url: "/settings",
+    icon: Settings,
+  },
+]
 
-export function AppSidebar({
-  ...props
-}) {
+export function AppSidebar() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getMe();
+        setUser(data.user);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+    fetchUser();
+  }, []);
+  
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
-        <VersionSwitcher versions={data.versions} defaultVersion={data.versions[0]} />
-        <SearchForm />
-      </SidebarHeader>
-      <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
-      <SidebarRail />
-    </Sidebar>
-  );
+		<Sidebar className="border-r-2 border-amber-200">
+			<SidebarHeader className="border-b border-amber-200 pb-4">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton className="h-12 text-lg font-semibold hover:bg-amber-100 transition-colors">
+							<div className="flex items-center justify-center rounded-xl h-8 w-8 bg-[#FFE64D] shadow-sm">
+								<GalleryVerticalEnd size={18} />
+							</div>
+							<span className="text-amber-900">Koursera</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarHeader>
+			<SidebarContent className="px-2 py-4">
+				<SidebarGroup>
+					<SidebarGroupLabel className="text-amber-700 font-medium text-xs uppercase tracking-wider mb-2">
+						Menu
+					</SidebarGroupLabel>
+					<SidebarGroupContent>
+						<SidebarMenu className="space-y-1">
+							{items.map((item) => (
+								<SidebarMenuItem key={item.title}>
+									<SidebarMenuButton 
+										asChild 
+										className="h-10 rounded-xl font-medium text-gray-700 hover:bg-amber-100 hover:text-amber-900 transition-all duration-200 data-[active=true]:bg-[#FFE64D] data-[active=true]:text-amber-900 data-[active=true]:shadow-sm"
+									>
+										<a href={item.url} className="flex items-center gap-3">
+											<item.icon className="h-5 w-5" />
+											<span>{item.title}</span>
+										</a>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
+						</SidebarMenu>
+					</SidebarGroupContent>
+				</SidebarGroup>
+			</SidebarContent>
+			<SidebarFooter className="border-t border-amber-200 pt-4">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<SidebarMenuButton className="h-12 rounded-xl hover:bg-amber-100 transition-colors">
+									<div className="flex items-center justify-center rounded-full h-8 w-8 bg-amber-200 text-amber-800">
+										<User2 size={18} />
+									</div>
+									<div className="flex flex-col items-start">
+										<span className="font-medium text-gray-800">
+											{user ? `${user.firstName} ${user.lastName}` : "Loading..."}
+										</span>
+									</div>
+									<ChevronUp className="ml-auto text-gray-500" />
+								</SidebarMenuButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								side="top"
+								className="w-[--radix-popper-anchor-width] rounded-xl border-amber-200 bg-[#FFFBEB]"
+							>
+								<DropdownMenuItem onSelect={()=>{
+                                    navigate("/settings");
+                                }}
+                                
+                                className="rounded-lg hover:bg-amber-100 cursor-pointer">
+									<span>Account</span>
+								</DropdownMenuItem>
+								{/* <DropdownMenuItem className="rounded-lg hover:bg-amber-100 cursor-pointer">
+									<span>Billing</span>
+								</DropdownMenuItem> */}
+								<DropdownMenuItem onSelect={()=> {
+                                    localStorage.removeItem("token");
+                                    navigate("/login", {replace: true})
+                                }}
+                                 className="rounded-lg hover:bg-red-100 text-red-600 cursor-pointer">
+									<span>Sign out</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarFooter>
+		</Sidebar>
+	);
 }

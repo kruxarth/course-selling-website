@@ -310,6 +310,63 @@ Navigate to `http://localhost:5173` — you should see the Koursera landing page
 
 ---
 
+## 🚢 Deploying on Vercel
+
+Since we have a **separate frontend and backend**, you need to create **two Vercel projects** — one for each.
+
+### Step 1: Deploy the Backend
+
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import your GitHub repo (`kruxarth/course-selling-website`)
+3. Set the **Root Directory** to `backend`
+4. Vercel will auto-detect it via `vercel.json` — no build command needed
+5. Add the following **Environment Variables**:
+
+   | Variable | Value |
+   |---|---|
+   | `MONGO_URL` | Your MongoDB Atlas connection string |
+   | `JWT_USER_PASSWORD` | Your user JWT secret |
+   | `JWT_ADMIN_PASSWORD` | Your admin JWT secret |
+   | `FRONTEND_URL` | Your deployed frontend Vercel URL (add after frontend deploy) |
+   | `CLOUDINARY_CLOUD_NAME` | Your Cloudinary cloud name |
+   | `CLOUDINARY_API_KEY` | Your Cloudinary API key |
+   | `CLOUDINARY_API_SECRET` | Your Cloudinary API secret |
+
+6. Click **Deploy**
+7. Note down the deployed backend URL (e.g., `https://your-backend.vercel.app`)
+
+### Step 2: Deploy the Frontend
+
+1. Go to [vercel.com](https://vercel.com) → **Add New Project**
+2. Import the **same GitHub repo** again
+3. Set the **Root Directory** to `frontend`
+4. Framework Preset should auto-detect **Vite**
+5. Add the following **Environment Variable**:
+
+   | Variable | Value |
+   |---|---|
+   | `VITE_API_URL` | Your deployed backend URL (e.g., `https://your-backend.vercel.app`) |
+
+6. Click **Deploy**
+7. Note down the deployed frontend URL
+
+### Step 3: Update Backend CORS
+
+After both are deployed, go back to your **backend Vercel project** → Settings → Environment Variables and update:
+
+| Variable | Value |
+|---|---|
+| `FRONTEND_URL` | Your deployed frontend URL (e.g., `https://your-frontend.vercel.app`) |
+
+Then **redeploy** the backend for the change to take effect.
+
+> **⚠️ Important Notes for Vercel Deployment:**
+> - Vercel serverless functions have a **max execution time of 10s** (free tier). Keep API responses fast.
+> - File uploads via `express-fileupload` use `/tmp/` which is available in Vercel serverless functions but files are **ephemeral** — they are deleted after the function execution, which is fine since we upload to Cloudinary immediately.
+> - Each Vercel project gets its own `.vercel.json` config already included in this repo.
+
+---
+
 ## 🗄️ Database Models
 
 ### User

@@ -13,11 +13,23 @@ import courseRoutes from "./routes/courseRoutes.js";
 
 const app = express();
 
-// Allow requests from your frontend
+// Allow requests from your frontend (local + deployed)
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL ||"http://localhost:5173", // Your Vite dev server
-  credentials: true, // If you need to send cookies/auth headers
-  allowedHeaders: ["Content-Type", "token"] // Allow custom 'token' header
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  allowedHeaders: ["Content-Type", "token"],
 }));
 
 app.use(express.json());

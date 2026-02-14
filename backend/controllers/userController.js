@@ -89,6 +89,28 @@ export const getMe = async (req, res) => {
 	}
 }
 
+export const updateUser = async (req, res) => {
+	const { firstName, lastName } = req.body;
+
+	try {
+		const user = await userModel.findById(req.userId);
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		user.firstName = firstName ?? user.firstName;
+		user.lastName = lastName ?? user.lastName;
+		await user.save();
+
+		const updated = user.toObject();
+		delete updated.password;
+
+		return res.status(200).json({ message: "Profile updated successfully", user: updated });
+	} catch (error) {
+		return res.status(500).json({ error: "Error updating profile" });
+	}
+}
+
 // export const purchase = async (req, res)={
 // 	const userId = req.userId;
 // 	try {

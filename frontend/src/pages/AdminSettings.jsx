@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getMe, updateUser } from "@/api/auth.api";
+import { getAdminMe, updateAdmin } from "@/api/admin.api";
 import { CalendarDays, Mail, Save, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,37 +10,36 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-export function Settings() {
+export function AdminSettings() {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["user"],
-    queryFn: getMe,
+    queryKey: ["admin"],
+    queryFn: getAdminMe,
   });
 
-  const user = data?.user ?? null;
+  const admin = data?.admin ?? null;
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
   useEffect(() => {
-    if (user) {
-      setFirstName(user.firstName || "");
-      setLastName(user.lastName || "");
+    if (admin) {
+      setFirstName(admin.firstName || "");
+      setLastName(admin.lastName || "");
     }
-  }, [user]);
+  }, [admin]);
 
   const mutation = useMutation({
-    mutationFn: updateUser,
+    mutationFn: updateAdmin,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user"] });
+      queryClient.invalidateQueries({ queryKey: ["admin"] });
     },
   });
 
@@ -50,10 +49,10 @@ export function Settings() {
   };
 
   const hasChanges =
-    user && (firstName !== user.firstName || lastName !== user.lastName);
+    admin && (firstName !== admin.firstName || lastName !== admin.lastName);
 
-  const joinedDate = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-IN", {
+  const joinedDate = admin?.createdAt
+    ? new Date(admin.createdAt).toLocaleDateString("en-IN", {
         day: "numeric",
         month: "long",
         year: "numeric",
@@ -67,7 +66,7 @@ export function Settings() {
         <div>
           <h1 className="text-4xl font-bold tracking-tight">Settings</h1>
           <p className="text-gray-500 mt-2 text-lg">
-            Manage your account details
+            Manage your admin account details
           </p>
         </div>
 
@@ -119,7 +118,7 @@ export function Settings() {
                   <div className="flex items-center gap-2">
                     <Input
                       id="email"
-                      value={user?.email || ""}
+                      value={admin?.email || ""}
                       disabled
                       className="border-amber-200 bg-amber-50/50"
                     />

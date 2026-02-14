@@ -30,3 +30,13 @@ export const getPurchases = async () => {
     return res.data
 }
 
+export const allCourses = async()=>{
+    const res = await api.get("/course/all")
+    return res.data
+}
+
+export const updateUser = async (payload) => {
+    const res = await api.put("/user/update", payload)
+    return res.data
+}
+

@@ -9,14 +9,14 @@ const userSchema = new Schema({
     password: String,
     firstName: String,
     lastName: String
-});
+}, { timestamps: true });
 
 const adminSchema = new Schema({
     email: {type: String, unique: true},
     password: String,
     firstName: String,
     lastName: String
-});
+}, { timestamps: true });
 
 const courseSchema = new Schema({
     title: String,
@@ -25,6 +25,10 @@ const courseSchema = new Schema({
     image: {
         public_id: String,
         url: String
+    },
+    creatorId: {
+        type: mongoose.Types.ObjectId,
+        ref: "admin"
     }
     });
 

@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 export const getAllCourses = async (req, res) => {
 	try {
-		const courses = await courseModel.find({});
+		const courses = await courseModel.find({}).populate("creatorId", "firstName lastName");
 		return res.status(200).json({ courses });
 	} catch (error) {
 		console.log("error getting courses", error);

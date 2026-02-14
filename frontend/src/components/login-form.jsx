@@ -25,23 +25,62 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [role, setRole] = useState("user");
 
+// const {
+//   mutate: login,
+//   isPending,
+//   isError,
+//   error
+// } = useMutation({
+//   mutationFn: ({role, ...payload})=>
+//     role === "admin"?  signinAdmin(payload) : signinUser(payload),
+//   onSuccess: (data)=> {
+//     console.log("Login success:", data)
+//     localStorage.setItem("token", data.token)
+//     navigate("/dashboard")
+//   },
+//   onError: (err)=>{
+//     console.error(err);
+//   },
+// })
+
+
+
 const {
-  mutate: login,
-  isPending,
-  isError,
-  error
+	mutate: login,
+	isPending,
+	isError,
+	error
 } = useMutation({
-  mutationFn: ({role, ...payload})=>
-    role === "admin"?  signinAdmin(payload) : signinUser(payload),
-  onSuccess: (data)=> {
-    console.log("Login success:", data)
-    localStorage.setItem("token", data.token)
-    navigate("/dashboard")
-  },
-  onError: (err)=>{
-    console.error(err);
-  },
+	mutationFn: ({role, ...payload})=>
+		role === "admin"
+		? signinAdmin(payload)
+		: signinUser(payload),
+
+		onSuccess: (data, variables)=>{
+			console.log("login success:", data)
+
+			// store token in the correct key depending on role
+			if (variables.role === "admin") {
+				localStorage.setItem("admin-token", data.token);
+			} else {
+				localStorage.setItem("token", data.token);
+			}
+
+			if(variables.role === "admin"){
+				navigate("/admin/dashboard")
+			}else{
+				navigate("/dashboard")
+			}
+		},
+
+	onError: (err)=>{
+		console.error(err);
+	}
 })
+
+
+
+
 
 const handleSubmit = (e) => {
   e.preventDefault()

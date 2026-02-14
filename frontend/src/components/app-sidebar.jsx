@@ -25,7 +25,7 @@ const items = [
     icon: Home,
   },
   {
-    title: "Courses",
+    title: "All Courses",
     url: "/courses",
     icon: Package2,
   },

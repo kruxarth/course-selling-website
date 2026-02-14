@@ -73,6 +73,46 @@ export const logout = (req, res) => {
 	return res.status(200).json({ message: "You logged out successfully" });
 }
 
+export const getAdminMe = async (req, res) => {
+	try {
+		const admin = await adminModel.findById(req.adminId).select("-password");
+		if (!admin) {
+			return res.status(404).json({ error: "Admin not found" });
+		}
+		return res.status(200).json({ admin });
+	} catch (error) {
+		return res.status(500).json({ error: "Error fetching admin profile" });
+	}
+}
+
+export const updateAdmin = async (req, res) => {
+	const { firstName, lastName } = req.body;
+	try {
+		const admin = await adminModel.findById(req.adminId);
+		if (!admin) {
+			return res.status(404).json({ error: "Admin not found" });
+		}
+		admin.firstName = firstName ?? admin.firstName;
+		admin.lastName = lastName ?? admin.lastName;
+		await admin.save();
+
+		const updated = admin.toObject();
+		delete updated.password;
+		return res.status(200).json({ message: "Profile updated successfully", admin: updated });
+	} catch (error) {
+		return res.status(500).json({ error: "Error updating profile" });
+	}
+}
+
+export const getAdminCourses = async (req, res) => {
+	try {
+		const courses = await courseModel.find({ creatorId: req.adminId });
+		return res.status(200).json({ courses });
+	} catch (error) {
+		return res.status(500).json({ error: "Error fetching courses" });
+	}
+}
+
 
 
 export const deleteCourse = async (req, res) => {

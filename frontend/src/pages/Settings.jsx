@@ -62,10 +62,10 @@ export function Settings() {
 
   return (
     <div className="bg-[#FFFBEB] min-h-screen w-full">
-      <div className="px-6 py-8 lg:px-10 space-y-8 max-w-3xl">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 space-y-8 max-w-3xl">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold tracking-tight">Settings</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Settings</h1>
           <p className="text-gray-500 mt-2 text-lg">
             Manage your account details
           </p>
@@ -116,7 +116,7 @@ export function Settings() {
                 {/* Email (read-only) */}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
                     <Input
                       id="email"
                       value={user?.email || ""}

@@ -51,7 +51,7 @@ export function Dashboard() {
 
   return (
     <div className="bg-[#FFFBEB] min-h-screen w-full">
-      <div className="px-6 py-8 lg:px-10 space-y-8">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 space-y-8">
         {/* Greeting */}
         <div>
           {loading ? (
@@ -61,7 +61,7 @@ export function Dashboard() {
             </div>
           ) : (
             <>
-              <h1 className="text-4xl font-bold tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
                 {greeting}, {user?.firstName || "there"} 👋
               </h1>
               <p className="text-gray-500 mt-2 text-lg">
@@ -72,7 +72,7 @@ export function Dashboard() {
         </div>
 
         {/* Stats Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 rounded-xl" />
@@ -84,7 +84,7 @@ export function Dashboard() {
                 >
                   <div className="flex flex-col gap-1">
                     <span className="text-sm text-gray-500">{label}</span>
-                    <span className="font-bold tabular-nums text-5xl">
+                    <span className="font-bold tabular-nums text-4xl sm:text-5xl">
                       {value}
                     </span>
                   </div>
@@ -101,8 +101,8 @@ export function Dashboard() {
           {loading ? (
             <Skeleton className="h-64 max-w-3xl rounded-xl" />
           ) : activeCourse ? (
-            <Card className="relative w-full max-w-3xl flex flex-row overflow-hidden h-64 border-amber-200">
-              <div className="relative w-1/3 shrink-0">
+            <Card className="relative w-full max-w-3xl flex flex-col overflow-hidden border-amber-200 sm:h-64 sm:flex-row">
+              <div className="relative h-40 sm:h-auto sm:w-1/3 sm:shrink-0">
                 <div className="absolute inset-0 z-30 bg-black/35" />
                 <img
                   src={activeCourse.image?.url}
@@ -115,7 +115,7 @@ export function Dashboard() {
                   <CardAction>
                     <Badge variant="secondary">Continue</Badge>
                   </CardAction>
-                  <CardTitle className="text-3xl">
+                  <CardTitle className="text-2xl sm:text-3xl">
                     {activeCourse.title}
                   </CardTitle>
                   <CardDescription>

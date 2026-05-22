@@ -6,7 +6,7 @@ import signupBg from "@/assets/signupbg.jpg"
 export function Signup() {
     return (
         <div className="grid min-h-svh lg:grid-cols-2 bg-amber-50">
-            <div className="flex flex-col gap-4 p-6 md:p-10">
+            <div className="flex min-w-0 flex-col gap-4 p-4 sm:p-6 md:p-10">
                 <div className="flex justify-center gap-2 md:justify-start">
                     <a href="#" className="flex items-center gap-2 font-medium">
                         <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
@@ -15,8 +15,8 @@ export function Signup() {
                         Kourera
                     </a>
                 </div>
-                <div className="flex flex-1 items-center justify-center bg-white my-10 mx-40 rounded-2xl">
-                    <div className="w-full max-w-xs">
+                <div className="flex flex-1 items-center justify-center bg-white rounded-2xl px-4 py-8 sm:px-8 md:my-10 md:mx-10 lg:mx-16 xl:mx-40">
+                    <div className="w-full max-w-sm">
                         <SignupForm />
                     </div>
                 </div>

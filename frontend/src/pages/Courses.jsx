@@ -28,10 +28,10 @@ export function Courses() {
 
   return (
     <div className="bg-[#FFFBEB] min-h-screen w-full">
-      <div className="px-6 py-8 lg:px-10 space-y-8">
+      <div className="px-4 py-6 sm:px-6 sm:py-8 lg:px-10 space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">
             Browse Courses
           </h1>
           <p className="text-gray-500 mt-2 text-lg">

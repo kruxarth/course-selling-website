@@ -6,7 +6,7 @@ export function AdminLayout() {
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <main className="flex-1 w-full overflow-auto">
+      <main className="min-w-0 flex-1 w-full overflow-auto">
         <div className="sticky top-0 z-10 bg-[#FFFBEB] p-2">
           <SidebarTrigger />
         </div>
